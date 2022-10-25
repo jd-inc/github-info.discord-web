@@ -1,6 +1,6 @@
 import "dotenv/config";
-
 import { Client, IntentsBitField } from 'discord.js';
+import ready from "./listeners/ready";
 
 console.log("Bot is starting...");
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -22,7 +22,6 @@ const client: Client = new Client({
     IntentsBitField.Flags.DirectMessageReactions,
 	]
 });
-	client.login(TOKEN);
-  client.on('ready', () => {
-    console.log('Work again?!');
-  })
+  client.login(TOKEN);
+  
+ready(client);
