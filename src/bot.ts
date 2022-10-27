@@ -1,9 +1,11 @@
 import "dotenv/config";
-import { Client, IntentsBitField } from 'discord.js';
+import { Client, IntentsBitField, REST, Routes} from 'discord.js';
+
 import ready from "./listeners/ready";
 
 console.log("Bot is starting...");
-const TOKEN = process.env.DISCORD_BOT_TOKEN;
+
+const TOKEN: any = process.env.DISCORD_BOT_TOKEN;
 
 const client: Client = new Client({
 	intents: [
@@ -22,6 +24,13 @@ const client: Client = new Client({
     IntentsBitField.Flags.DirectMessageReactions,
 	]
 });
-  client.login(TOKEN);
-  
+//Для очиски комманд
+
+// const rest = new REST({ version: '10' }).setToken(TOKEN);
+// rest.put(Routes.applicationCommands('1034374338784268349'), { body: [] })
+// 	.then(() => console.log('Successfully deleted all application commands.'))
+// 	.catch(console.error);
+
 ready(client);
+
+client.login(TOKEN);

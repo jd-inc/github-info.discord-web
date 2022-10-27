@@ -19,6 +19,7 @@
   "homepage": "https://github.com/sundry-inc/github-info.discord-web#readme",
   "dependencies": {
     "discord.js": "^14.3.0",
+    "wokcommands": "^2.0.3",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
