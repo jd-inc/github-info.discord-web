@@ -1,4 +1,4 @@
-import { CommandInteractionOptionResolver, ContextMenuInteraction, MessageEmbed } from "discord.js";
+import { CommandInteractionOptionResolver, ContextMenuInteraction } from "discord.js";
 import { client } from "../bot";
 import { Event } from "../structures/Event";
 import { ExtendedInteraction } from "../typings/Command";
@@ -27,7 +27,7 @@ export default new Event("interactionCreate", async (interaction) => {
     command.run({
       args: interaction.options as CommandInteractionOptionResolver,
       client,
-      interaction: interaction as ContextMenuInteraction,
+      interaction: interaction as ExtendedInteraction,
     });
 }
 });

@@ -28,7 +28,7 @@ export default new SlashCommand({
       type: ApplicationCommandOptionTypes.STRING,
       choices: [
         {name: 'Green', value: 'SUCCESS'},
-        {name: 'Gray', value: 'SECONDSRY'},
+        {name: 'Gray', value: 'SECONDARY'},
         {name: 'Blue', value: 'PRIMARY'},
         {name: 'Red', value: 'DANGER'},
       ]
@@ -44,8 +44,8 @@ export default new SlashCommand({
     const role = interaction.guild.roles.cache.find((role: any) => role.name === role_name);
     const command_user = interaction.guild.members.cache.get(interaction.member.user.id);
     
-    const ChoiceValues: string[] = ['SUCCESS', 'SECONDSRY', 'PRIMARY', 'DANGER'];
-    const CurrentButtonStyle: any = ChoiceValues[ChoiceValues.indexOf(button_style)];
+    const ChoiceValues: string[] = ['SUCCESS', 'SECONDARY', 'PRIMARY', 'DANGER'];
+    const CurrentButtonStyle: any = ChoiceValues[ChoiceValues.indexOf(button_style)];    
     
     client.channels.cache.get(`${logs_channel.id}`).send(`User ${command_user} created a button to assign the role ${role}.`);
     

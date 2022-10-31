@@ -15,12 +15,18 @@ export interface ExtendedInteraction extends CommandInteraction {
 
 interface RunOptions {
   client: ExtendedClient;
-  interaction: ExtendedInteraction 
-		| ContextMenuInteraction;
+  interaction: ExtendedInteraction ;
+  args: CommandInteractionOptionResolver;
+}
+
+interface RunOptions2 {
+  client: ExtendedClient;
+  interaction: ContextMenuInteraction;
   args: CommandInteractionOptionResolver;
 }
 
 type RunFunction = (options: RunOptions) => any;
+type RunFunction2 = (options: RunOptions2) => any;
 
 export type CommandType = {
   userPermissions?: PermissionResolvable[];
@@ -29,5 +35,5 @@ export type CommandType = {
 
 export type ContextType = {
   userPermissions?: PermissionResolvable[];
-  run: RunFunction;
+  run: RunFunction2;
 } & MessageApplicationCommandData;
