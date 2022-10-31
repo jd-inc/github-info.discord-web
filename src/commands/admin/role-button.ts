@@ -1,9 +1,9 @@
 import { MessageActionRow, MessageButton, MessageButtonStyle } from "discord.js";
 import { ApplicationCommandOptionTypes, ApplicationCommandTypes, MessageButtonStyles } from "discord.js/typings/enums";
 import getLogChannelId from "../../lib/get-log-channel-id";
-import { Command } from "../../structures/Command";
+import { SlashCommand } from "../../structures/Command";
 
-export default new Command({
+export default new SlashCommand({
   name: 'role-button',
   description: 'Button to add a role.',
   type: ApplicationCommandTypes.CHAT_INPUT,

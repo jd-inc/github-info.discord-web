@@ -1,8 +1,8 @@
 import { ApplicationCommandOptionTypes, ApplicationCommandTypes } from "discord.js/typings/enums";
 import getLogChannelId from "../../lib/get-log-channel-id";
-import { Command } from "../../structures/Command";
+import { SlashCommand } from "../../structures/Command";
 
-export default new Command({
+export default new SlashCommand({
   name: 'set-activity',
   description: 'Change activity text.',
   defaultMemberPermissions: "ADMINISTRATOR",
