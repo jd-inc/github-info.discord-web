@@ -67,7 +67,7 @@ export default new Command({
       
         client.channels.cache.get(`${logs_channel.id}`).send(`User ${click_user} was given a role when clicking on the ${role} button.`);
         interaction.reply({ 
-          content: `Role added: @${role_name}`,
+          content: `Role added: ${role}`,
           ephemeral: true
         })
       }
