@@ -1,4 +1,4 @@
-import { CommandInteractionOptionResolver, ContextMenuInteraction } from "discord.js";
+import { CommandInteractionOptionResolver } from "discord.js";
 import { client } from "../bot";
 import { Event } from "../structures/Event";
 import { ExtendedInteraction } from "../typings/Command";
@@ -31,22 +31,28 @@ export default new Event("interactionCreate", async (interaction) => {
     });
   }
 
-  client.on('interactionCreate', async (interaction: any) => {
-    if (!interaction.isButton()) return;
-    const id_arr = ['role-button-test', 'role']
-    for (let i = 0; i < id_arr.length; i++) {
-      if (interaction.customId === `${id_arr[i]}`) {
-        // const click_user = interaction.guild.members.cache.get(interaction.member.user.id);
-        //   click_user.roles.add(role);
-      
-        // client.channels.cache.get(`${logs_channel.id}`).send(`User ${click_user} was given a role when clicking on the ${role} button.`);
-        interaction.reply({ 
-          content: `ok`,
-          ephemeral: true
-        })
-        // console.log('second button work');
-        
-      }
-    }
+  process.on('unhandledRejection', (error: any)  => {
+    console.error('Unhandled promise rejection:', error);
   });
+
+  // function name(arr: any[], elem: string) {
+  //   return arr.includes(elem);
+  // }
+
+  // client.on('interactionCreate', async (interaction: any) => {
+  //   if (!interaction.isButton()) return;
+
+  //   // need update
+  //   const id_arr = ['test', 'test-1', 'test-2'];
+  //   if (name(id_arr, interaction.customId)) {
+  //     const click_user = interaction.guild.members.cache.get(interaction.member.user.id);
+  //     const role = interaction.guild.roles.cache.find((role: any) => role.name === interaction.customId);  
+  //       click_user.roles.add(role);
+    
+  //     interaction.reply({ 
+  //         content: `${interaction.customId}`,
+  //         ephemeral: true
+  //     })
+  //   }
+  // });
 });
