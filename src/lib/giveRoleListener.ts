@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import isRoleButton from "./isRoleButton";
+import isArrayElement from "./isArrayElement";
 
 export default (client: Client) => {
   client.on('interactionCreate', async (interaction: any) => {
@@ -7,7 +7,7 @@ export default (client: Client) => {
 
     // need update
     const id_arr: string[] = ['role_btn_test', 'role_btn_test-1', 'role_btn_test-2'];
-    const isRoleBtn: boolean = isRoleButton(id_arr, interaction.customId);
+    const isRoleBtn: boolean = isArrayElement(id_arr, interaction.customId);
 
     if (isRoleBtn) {
       const click_user = interaction.guild.members.cache.get(interaction.member.user.id);
