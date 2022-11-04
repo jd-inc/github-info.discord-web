@@ -6,7 +6,7 @@ export default new ContextCommand({
   name: 'add-role-button',
   type: ApplicationCommandTypes.MESSAGE,
 
-  run: async ({ client, interaction }) => {
+  run: async ({ interaction }) => {
     const message_id = interaction.targetId;
     const message_content = interaction.channel?.messages.fetch(message_id);
     
@@ -47,25 +47,25 @@ export default new ContextCommand({
 
       message_content
       ?.then(async (msg: any) => { 
-        const components_array: any[] = msg.components[0]?.components;
+        const components_array: any[] = msg.components;
 
         if (components_array.length === 5) {
           await submitted.reply({
-            content: 'Can not add more than 5 buttons.',
+            content: 'Can not add more than 5 buttons in this row.',
             ephemeral: true
           })
         } else {
-          const result = [new MessageActionRow({
+          const result = [...components_array,
+            new MessageActionRow({
             components: [
-              ...components_array,
                new MessageButton({
-                customId: `${name}`,
+                customId: `role_btn_${name}`,
                 label: `${title}`,
                 style: final_style,
               })
             ]
           })]
-          msg.edit({components: result});
+          msg.edit({components: result});        
           
           await submitted.reply({
             content: 'Button added.',

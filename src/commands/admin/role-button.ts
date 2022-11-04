@@ -45,7 +45,7 @@ export default new SlashCommand({
     interaction.reply({ components: [new MessageActionRow({
       components: [
         new MessageButton({
-          customId: `${role_name}`,
+          customId: `role_btn_${role_name}`,
           label: `${button_title}`,
           style: CurrentButtonStyle,
         })

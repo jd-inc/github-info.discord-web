@@ -6,6 +6,9 @@ export default new Event("ready", () => {
   activity(client);
 
   function name(arr: any[], elem: string) {
+    // arr = arr.map((e: any) => {
+    //   return e.split('role_btn_')
+    // })
     return arr.includes(elem);
   }
 
@@ -13,14 +16,17 @@ export default new Event("ready", () => {
     if (!interaction.isButton()) return;
 
     // need update
-    const id_arr = ['test', 'test-1', 'test-2'];
-    if (name(id_arr, interaction.customId)) {
+    const id_arr = ['role_btn_test', 'role_btn_test-1', 'role_btn_test-2'];
+    const isRoleBtn = name(id_arr, interaction.customId);
+    
+    if (isRoleBtn) {
+      const role_name = interaction.customId.split('role_btn_')[1];
       const click_user = interaction.guild.members.cache.get(interaction.member.user.id);
-      const role = interaction.guild.roles.cache.find((role: any) => role.name === interaction.customId);  
+      const role = interaction.guild.roles.cache.find((role: any) => role.name === role_name);  
         click_user.roles.add(role);
     
       interaction.reply({ 
-          content: `${interaction.customId}`,
+          content: `You got [${role}] a role`,
           ephemeral: true
       })
     }
