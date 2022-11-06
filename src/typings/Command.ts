@@ -2,7 +2,7 @@ import {
   ChatInputApplicationCommandData,
   CommandInteraction,
   CommandInteractionOptionResolver,
-  ContextMenuInteraction,
+  ContextMenuCommandInteraction,
   GuildMember,
   MessageApplicationCommandData,
   PermissionResolvable,
@@ -21,7 +21,7 @@ interface RunOptions {
 
 interface RunOptions2 {
   client: ExtendedClient;
-  interaction: ContextMenuInteraction;
+  interaction: ContextMenuCommandInteraction;
   args: CommandInteractionOptionResolver;
 }
 

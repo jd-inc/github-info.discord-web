@@ -12,15 +12,14 @@ export default (client: Client) => {
     if (isRoleBtn) {
       const click_user = interaction.guild.members.cache.get(interaction.member.user.id);
       const role_name = interaction.customId.split('role_btn_')[1];
-      const role = interaction.guild.roles.cache.find((role: any) => role.name === role_name);  
+      const role = interaction.guild.roles.cache.find(role => role.name === `${role_name}`);  
 
-      if (click_user.roles.cache.find(role => role.name == role_name)){
-        click_user.roles.remove(role);
+      if (click_user.roles.cache.find(role => role.name === `${role_name}`)){
         interaction.reply({ 
-          content: `The role [${role}] has been removed.`,
+          content: `You already have this role.`,
           ephemeral: true
         })
-        return
+        return;
       }
       
       click_user.roles.add(role);

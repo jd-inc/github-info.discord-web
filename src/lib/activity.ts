@@ -1,11 +1,11 @@
 import { Client } from "discord.js";
-import { ActivityTypes } from "discord.js/typings/enums";
+import { ActivityType } from "discord.js";
 
 export default (client: Client): void => {
   client.user?.setPresence({
     activities: [{
       name: '/set-activity',
-      type: ActivityTypes.PLAYING,
+      type: ActivityType.Playing,
     }],
     status: 'online'
   })

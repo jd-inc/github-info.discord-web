@@ -1,17 +1,17 @@
-import { ApplicationCommandOptionTypes, ApplicationCommandTypes } from "discord.js/typings/enums";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
   name: 'set-activity',
   description: 'Change activity text.',
-  defaultMemberPermissions: "ADMINISTRATOR",
-  type: ApplicationCommandTypes.CHAT_INPUT,
+  // userPermissions: 
+  type: ApplicationCommandType.ChatInput,
 
   options: [
     {
       name: 'activity-name',
       description: "Enter the acivity name.",
-      type: ApplicationCommandOptionTypes.STRING,
+      type: ApplicationCommandOptionType.String,
       required: true
     },
   ],

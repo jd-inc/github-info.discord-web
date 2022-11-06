@@ -1,78 +1,67 @@
-import { MessageActionRow, MessageButton, MessageSelectMenu, Modal, TextInputComponent } from "discord.js";
-import { ApplicationCommandTypes, MessageButtonStyles, TextInputStyles } from "discord.js/typings/enums";
+import { ActionRowBuilder, APIActionRowComponent, APIMessageActionRowComponent, ButtonBuilder, ModalBuilder, TextInputBuilder } from "discord.js";
+import { ApplicationCommandType, ButtonStyle, TextInputStyle } from "discord.js";
 import { ContextCommand } from "../../structures/Command";
 
 export default new ContextCommand({
   name: 'add-role-button',
-  type: ApplicationCommandTypes.MESSAGE,
+  type: ApplicationCommandType.Message,
 
   run: async ({ interaction }) => {
     const message_id = interaction.targetId;
-    const message_content = interaction.channel?.messages.fetch(message_id);
+    const message: any = await interaction.channel?.messages.fetch(message_id);
     
-    const modal = new Modal()
+    const modal = new ModalBuilder()
       .setCustomId('add-role')
       .setTitle('Modal for adding role button.');
 
     const fields = {
-      name: new TextInputComponent()
-        .setCustomId('roleNameInput')
+      name: new TextInputBuilder()
+        .setCustomId('name')
         .setLabel("Enter role name here:")
-        .setStyle(TextInputStyles.SHORT),
-      title: new TextInputComponent()
-        .setCustomId('buttonTitleInput')
+        .setStyle(TextInputStyle.Short),
+      title: new TextInputBuilder()
+        .setCustomId('title')
         .setLabel("Enter buton title here:")
-        .setStyle(TextInputStyles.SHORT),
-      style: new TextInputComponent()
-        .setCustomId('buttonStyleInput')
+        .setStyle(TextInputStyle.Short),
+      style: new TextInputBuilder()
+        .setCustomId('style')
         .setLabel('Enter: Red | Green | Blue | Gray.')  
-        .setStyle(TextInputStyles.SHORT),
+        .setStyle(TextInputStyle.Short),
     }
       
-    const nameInput: any = new MessageActionRow().addComponents(fields.name);
-    const titleInput: any = new MessageActionRow().addComponents(fields.title);
-    const styleSelect: any = new MessageActionRow().addComponents(fields.style);
+    const nameInput: any = new ActionRowBuilder().addComponents(fields.name);
+    const titleInput: any = new ActionRowBuilder().addComponents(fields.title);
+    const styleSelect: any = new ActionRowBuilder().addComponents(fields.style);
     modal.addComponents(nameInput, titleInput, styleSelect);
-      
 
     await interaction.showModal(modal);
     
     const submitted = await interaction.awaitModalSubmit({time: 60000});
     if (submitted) {
-      const [ name, title, style ] = Object.keys(fields).map(key => submitted.fields.getTextInputValue(fields[key].customId))
+      const name  = submitted.fields.getTextInputValue('name');
+      const title = submitted.fields.getTextInputValue('title');
+      const style = submitted.fields.getTextInputValue('style');
       
-      const ButtonStyles: MessageButtonStyles[] = [MessageButtonStyles.SUCCESS, MessageButtonStyles.SECONDARY, MessageButtonStyles.PRIMARY, MessageButtonStyles.DANGER];
+      const ButtonStyles: ButtonStyle[] = [ButtonStyle.Success, ButtonStyle.Secondary, ButtonStyle.Primary, ButtonStyle.Danger];
       const AlternativeStyles: string[] = ['GREEN', 'GRAY', 'BLUE', 'RED'];
       const final_style: any = ButtonStyles[AlternativeStyles.indexOf(style.toUpperCase())]
 
-      message_content
-      ?.then(async (msg: any) => { 
-        const components_array: any[] = msg.components;
+      const components_array: any = message.components[0]
 
-        if (components_array.length === 5) {
-          await submitted.reply({
-            content: 'Can not add more than 5 buttons in this row.',
-            ephemeral: true
-          })
-        } else {
-          const result = [...components_array,
-            new MessageActionRow({
-            components: [
-               new MessageButton({
-                customId: `role_btn_${name}`,
-                label: `${title}`,
-                style: final_style,
-              })
-            ]
-          })]
-          msg.edit({components: result});        
-          
-          await submitted.reply({
-            content: 'Button added.',
-            ephemeral: true
-          })
-        }
+      const result: any = new ActionRowBuilder().addComponents(new ButtonBuilder({
+        customId: `role_btn_${name}`,
+        label: `${title}`,
+        style: final_style,
+      }), ...components_array.components)
+
+      message.edit({ components: [ result ] });
+      
+      submitted.reply({
+        content: 'Button added.',
+        ephemeral: true
       })
-    }
+      
+      
+    }    
   }
 })
