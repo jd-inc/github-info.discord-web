@@ -56,11 +56,10 @@ export default new ContextCommand({
 
       message.edit({ components: [ result ] });
       
-      submitted.reply({
+      await submitted.reply({
         content: 'Button added.',
         ephemeral: true
       })
-      
       
     }    
   }

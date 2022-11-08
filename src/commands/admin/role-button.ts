@@ -43,7 +43,7 @@ export default new SlashCommand({
     const AlternativeStyles: string[] = ['SUCCESS', 'SECONDARY', 'PRIMARY', 'DANGER'];
     const final_style: any = ButtonStyles[AlternativeStyles.indexOf(button_style.toUpperCase())]
     
-    interaction.reply({ 
+    await  interaction.reply({ 
       components: [
         new ActionRowBuilder({
           components: [

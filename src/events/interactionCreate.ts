@@ -11,7 +11,7 @@ export default new Event("interactionCreate", async (interaction) => {
       return interaction.followUp("You have used a non existent command");
     }
 
-    command.run({
+    await command.run({
       args: interaction.options as CommandInteractionOptionResolver,
       client,
       interaction: interaction as ExtendedInteraction,
@@ -24,7 +24,7 @@ export default new Event("interactionCreate", async (interaction) => {
       return interaction.followUp("You have used a non existent command");
     }
 
-    command.run({
+    await command.run({
       args: interaction.options as CommandInteractionOptionResolver,
       client,
       interaction: interaction as ExtendedInteraction,
