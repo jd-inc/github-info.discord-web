@@ -12,7 +12,7 @@
     "url": "git+https://github.com/sundry-inc/moderator.discord.git"
   },
   "author": "joyfulpebble",
-  "license": "ISC",
+  "license": "Apache License 2.0",
   "bugs": {
     "url": "https://github.com/sundry-inc/moderator.discord/issues"
   },
