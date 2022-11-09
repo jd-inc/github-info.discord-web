@@ -29,5 +29,29 @@ export default (client: Client) => {
         ephemeral: true
       })
     }
+
+    if(interaction.customId === "verify_button") {
+      const click_user = interaction.guild.members.cache.get(interaction.member.user.id);
+      const member_role = interaction.guild.roles.cache.find(role => role.name === `Member`);  
+      const base_role = interaction.guild.roles.cache.find(role => role.name === `Ознакомлен с правилами`); 
+
+      if (click_user.roles.cache.find(role => role.name === `Member`)){
+        click_user.roles.remove(member_role);
+        await interaction.reply({ 
+          content: `Роль ${member_role} убрана.`,
+          ephemeral: true
+        })
+        return;
+      }
+      
+      click_user.roles.add(member_role);
+      click_user.roles.add(base_role);
+    
+      await interaction.reply({ 
+        content: `Теперь у вас есть ${member_role} роль`,
+        ephemeral: true
+      })
+      return;
+    }
   });
 }
