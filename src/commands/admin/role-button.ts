@@ -4,25 +4,26 @@ import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
   name: 'role-button',
-  description: 'Button to add a role.',
+  defaultMemberPermissions: 'ManageRoles',
+  description: 'Создать сообщение с ролью по кнопке.',
   type: ApplicationCommandType.ChatInput,
 
   options: [
     {
       name: "role",
-      description: 'The name is required for the role without the <@> sign.',
+      description: 'Имя роли без символа <@>.',
       required: true,
       type: ApplicationCommandOptionType.String
     },
     {
       name: "title",
-      description: 'The inscription that will be on the button.',
+      description: 'Текст кторый будет на кнопке.',
       required: true,
       type: ApplicationCommandOptionType.String
     },
     {
       name: "style",
-      description: 'The color that the button will have.',
+      description: 'Стиль кнопки.',
       required: true,
       type: ApplicationCommandOptionType.String,
       choices: [

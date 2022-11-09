@@ -1,9 +1,11 @@
-import { ActionRowBuilder, APIActionRowComponent, APIMessageActionRowComponent, ButtonBuilder, ModalBuilder, TextInputBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder } from "discord.js";
 import { ApplicationCommandType, ButtonStyle, TextInputStyle } from "discord.js";
+import isArrayElement from "../../lib/isArrayElement";
 import { ContextCommand } from "../../structures/Command";
 
 export default new ContextCommand({
   name: 'add-role-button',
+  defaultMemberPermissions: 'ManageRoles',
   type: ApplicationCommandType.Message,
 
   run: async ({ interaction }) => {
@@ -17,15 +19,15 @@ export default new ContextCommand({
     const fields = {
       name: new TextInputBuilder()
         .setCustomId('name')
-        .setLabel("Enter role name here:")
+        .setLabel("Введите имя роли без символа <@>:")
         .setStyle(TextInputStyle.Short),
       title: new TextInputBuilder()
         .setCustomId('title')
-        .setLabel("Enter buton title here:")
+        .setLabel("Введите текст который будет на кнопке:")
         .setStyle(TextInputStyle.Short),
       style: new TextInputBuilder()
         .setCustomId('style')
-        .setLabel('Enter: Red | Green | Blue | Gray.')  
+        .setLabel('Стиль нопки: Red | Green | Blue | Gray.')  
         .setStyle(TextInputStyle.Short),
     }
       
@@ -44,9 +46,11 @@ export default new ContextCommand({
       
       const ButtonStyles: ButtonStyle[] = [ButtonStyle.Success, ButtonStyle.Secondary, ButtonStyle.Primary, ButtonStyle.Danger];
       const AlternativeStyles: string[] = ['GREEN', 'GRAY', 'BLUE', 'RED'];
-      const final_style: any = ButtonStyles[AlternativeStyles.indexOf(style.toUpperCase())]
 
-      const components_array: any = message.components[0]
+      if(isArrayElement(AlternativeStyles, style.toUpperCase())) {
+        const final_style: ButtonStyle = ButtonStyles[AlternativeStyles.indexOf(style.toUpperCase())];
+     
+        const components_array: any = message.components[0]
 
       const result: any = new ActionRowBuilder().addComponents(new ButtonBuilder({
         customId: `role_btn_${name}`,
@@ -57,10 +61,15 @@ export default new ContextCommand({
       message.edit({ components: [ result ] });
       
       await submitted.reply({
-        content: 'Button added.',
+        content: 'Кнопка добавлена.',
         ephemeral: true
       })
-      
+      } else {
+        await submitted.reply({
+          content: `Стиля ${style.toUpperCase()} для кнопок нет.`,
+          ephemeral: true
+        });
+      }
     }    
   }
 })

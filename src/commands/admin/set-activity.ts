@@ -3,14 +3,14 @@ import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
   name: 'set-activity',
-  description: 'Change activity text.',
-  // userPermissions: 
+  description: 'Смена текста активности бота.',
+  defaultMemberPermissions: 'Administrator',
   type: ApplicationCommandType.ChatInput,
 
   options: [
     {
       name: 'activity-name',
-      description: "Enter the acivity name.",
+      description: "Введите имя активности бота.",
       type: ApplicationCommandOptionType.String,
       required: true
     },
@@ -28,7 +28,7 @@ export default new SlashCommand({
 		});
 
     await interaction.reply({
-      content: `Activity chenged on: ${activity_name}.`, 
+      content: `Aктивность бота изменена на: ${activity_name}.`, 
       ephemeral: true}
     )
   }

@@ -16,7 +16,7 @@ export default (client: Client) => {
 
       if (click_user.roles.cache.find(role => role.name === `${role_name}`)){
         interaction.reply({ 
-          content: `You already have this role.`,
+          content: `У вас уже есть эта роль.`,
           ephemeral: true
         })
         return;
@@ -25,7 +25,7 @@ export default (client: Client) => {
       click_user.roles.add(role);
     
       interaction.reply({ 
-        content: `You got [${role}] role`,
+        content: `Теперь у вас есть ${role} роль`,
         ephemeral: true
       })
     }
