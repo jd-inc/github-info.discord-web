@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import isArrayElement from "./isArrayElement";
+import isArrayElement from "../isArrayElement";
 
 export default (client: Client) => {
   client.on('interactionCreate', async (interaction: any) => {
