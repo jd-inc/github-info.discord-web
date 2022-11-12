@@ -14,6 +14,7 @@ const globPromise = promisify(glob);
 
 export class ExtendedClient extends Client {
   commands: Collection<string, CommandType> = new Collection();
+  voiceGenerator: Collection<string, any> = new Collection();
 
   constructor() {
     super({ intents: [
