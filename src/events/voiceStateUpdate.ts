@@ -2,14 +2,14 @@ import { ChannelType } from "discord.js";
 import { client } from "../bot";
 import { Event } from "../structures/Event";
 
-export default new Event("voiceStateUpdate", async (oldState, newState: any) => {
+export default new Event("voiceStateUpdate", async (oldState, newState) => {
   if (newState.id === client.user.id) return;
   const { member, guild } = newState;
   const newChannel = newState.channel;
   const oldChannel = oldState.channel;
-  const parentChannel = '1014073028059074573';
+  const parentChannel = guild.channels.cache.find(role => role.name === `Join To Create`);
 
-  if(oldChannel !== newChannel && newChannel && newChannel.id === parentChannel) {
+  if(oldChannel !== newChannel && newChannel && newChannel.id === parentChannel.id) {
     const voiceChannel = await guild.channels.create({
       name: `${member.user.username}'s channel`, 
       type: ChannelType.GuildVoice,
