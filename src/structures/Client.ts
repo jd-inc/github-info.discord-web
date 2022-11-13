@@ -4,9 +4,10 @@ import {
   ClientEvents,
   Collection,
 } from "discord.js";
-import { CommandType } from "../typings/Command";
 import glob from "glob";
+import mongoose from "mongoose";
 import { promisify } from "util";
+import { CommandType } from "../typings/Command";
 import { RegisterCommandsOptions } from "../typings/client";
 import { Event } from "./Event";
 
@@ -34,6 +35,8 @@ export class ExtendedClient extends Client {
 
   start() {
     this.registerModules();
+    this.connectionToMOngoose();
+
     this.login(process.env.BOT_TOKEN);
   }
   async importFile(filePath: string) {
@@ -48,6 +51,22 @@ export class ExtendedClient extends Client {
       this.application?.commands.set(commands);
       console.log("Registering global commands");
     }
+  }
+
+  async connectionToMOngoose() {
+    if(!process.env.MONGO_URI) return;
+    let connected: boolean = false;
+
+    try {
+      mongoose.connect(process.env.MONGO_URI, {
+        keepAlive: true,
+      })
+      connected = true;
+    } catch (error) {
+      throw new Error(`${error}`);      
+    }
+
+    if(connected) console.log('DB connected');    
   }
 
   async registerModules() {
