@@ -6,7 +6,7 @@ export default new Event('interactionCreate', async (interaction: any) => {
   if (!interaction.isButton()) return;
 
   // need update
-  const id_arr: string[] = ['role_btn_test', 'role_btn_test-1', 'role_btn_test-2'];
+  const id_arr: string[] = ['role_btn_Member',];
   const isRoleBtn: boolean = isArrayElement(id_arr, interaction.customId);
 
   if (isRoleBtn) {
@@ -15,8 +15,9 @@ export default new Event('interactionCreate', async (interaction: any) => {
     const role = interaction.guild.roles.cache.find(role => role.name === `${role_name}`);  
 
     if (click_user.roles.cache.find(role => role.name === `${role_name}`)){
+      click_user.roles.remove(role);
       interaction.reply({ 
-        content: `У вас уже есть эта роль.`,
+        content: `Роль ${role} убрана.`,
         ephemeral: true
       })
       return;
@@ -25,7 +26,7 @@ export default new Event('interactionCreate', async (interaction: any) => {
     click_user.roles.add(role);
   
     interaction.reply({ 
-      content: `Теперь у вас есть ${role} роль`,
+      content: `Теперь у вас есть ${role} роль.`,
       ephemeral: true
     })
   }

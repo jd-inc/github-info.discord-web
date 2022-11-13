@@ -11,9 +11,9 @@ export default new SlashCommand({
   options: [
     {
       name: "role",
-      description: 'Имя роли без символа <@>.',
+      description: 'Выберите роль.',
       required: true,
-      type: ApplicationCommandOptionType.String
+      type: ApplicationCommandOptionType.Role
     },
     {
       name: "title",
@@ -36,7 +36,7 @@ export default new SlashCommand({
   ],
   
   run: async ({ interaction }: any) => {
-    const role_name = interaction.options.getString('role');
+    const role = interaction.options.getRole('role');
     const button_title = interaction.options.getString('title');
     const button_style = interaction.options.getString('style');
     
@@ -49,7 +49,7 @@ export default new SlashCommand({
         new ActionRowBuilder({
           components: [
             new ButtonBuilder({
-              customId: `role_btn_${role_name}`,
+              customId: `role_btn_${role.name}`,
               label: `${button_title}`,
               style: final_style,
             })

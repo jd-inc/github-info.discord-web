@@ -10,7 +10,7 @@ export default new SlashCommand({
   options: [
     {
       name: "text",
-      description: 'Выберите пользователя.',
+      description: 'Введите новое название для вашего канала.',
       required: true,
       type: ApplicationCommandOptionType.String,
       maxLength: 22
