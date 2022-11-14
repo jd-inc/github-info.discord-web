@@ -7,11 +7,41 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
   const { member, guild } = newState;
   const newChannel = newState.channel;
   const oldChannel = oldState.channel;
-  const parentChannel = guild.channels.cache.find(role => role.name === `Join To Create`);
+  const parentCloseChannel = guild.channels.cache.find(channel => channel.name === `🔒 Создать комнату`);
+  const parentOpenChannel = guild.channels.cache.find(channel => channel.name === `🔓 Создать комнату`);
 
-  if(oldChannel !== newChannel && newChannel && newChannel.id === parentChannel.id) {
+  if(oldChannel !== newChannel && newChannel && newChannel.id === parentOpenChannel.id) {
     const voiceChannel = await guild.channels.create({
-      name: `${member.user.username}'s channel`, 
+      name: `🔓 ${member.user.username}'s channel`, 
+      type: ChannelType.GuildVoice,
+      parent: newChannel.parent,
+      permissionOverwrites: [
+        {id: member.id, allow: ["Connect"]},
+        {id: guild.id, allow : ["Connect"]}
+      ]
+    })
+
+    client.voiceGenerator.set(guild.id, voiceChannel.id);
+
+    await newChannel.permissionOverwrites.edit(member, {Connect: false});
+    setTimeout(() => {
+      newChannel.permissionOverwrites.delete(member)
+    }, 30 * 1000);
+
+    return setTimeout(() => {
+      member.voice.setChannel(voiceChannel);
+    }, 500);
+  }
+  const ownedOpenChannel: string = client.voiceGenerator.get(guild.id); 
+
+  if(ownedOpenChannel && oldChannel.id === ownedOpenChannel && (!newChannel || newChannel.id !== ownedOpenChannel)) {
+    client.voiceGenerator.set(member.id, null);    
+    oldChannel.delete().catch(() => {})
+  }
+
+  if(oldChannel !== newChannel && newChannel && newChannel.id === parentCloseChannel.id) {
+    const voiceChannel = await guild.channels.create({
+      name: `🔒 ${member.user.username}'s channel`, 
       type: ChannelType.GuildVoice,
       parent: newChannel.parent,
       permissionOverwrites: [
@@ -31,9 +61,9 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
       member.voice.setChannel(voiceChannel);
     }, 500);
   }
-  const ownedChannel: string = client.voiceGenerator.get(member.id); 
+  const ownedCloseChannel: string = client.voiceGenerator.get(member.id); 
 
-  if(ownedChannel && oldChannel.id === ownedChannel && (!newChannel || newChannel.id !== ownedChannel)) {
+  if(ownedCloseChannel && oldChannel.id === ownedCloseChannel && (!newChannel || newChannel.id !== ownedCloseChannel)) {
     client.voiceGenerator.set(member.id, null);    
     oldChannel.delete().catch(() => {})
   }
