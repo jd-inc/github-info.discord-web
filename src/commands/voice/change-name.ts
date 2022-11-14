@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, ApplicationCommandType, VoiceChannel } fr
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
-  name: 'change-channel-name',
+  name: 'voice-name',
   defaultMemberPermissions: 'Connect',
   description: 'Изменить имя вашего канала.',
   type: ApplicationCommandType.ChatInput,
