@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, ApplicationCommandType, GuildMember, Voic
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
-  name: 'kick-member',
+  name: 'voice-kick',
   defaultMemberPermissions: 'Connect',
   description: 'Выгнать пользователя из вашего канала.',
   type: ApplicationCommandType.ChatInput,

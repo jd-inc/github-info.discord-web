@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, ApplicationCommandType, VoiceChannel } fr
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
-  name: 'invite-user',
+  name: 'voice-invite',
   defaultMemberPermissions: 'Connect',
   description: 'Пригласить в ваш канал другого пользователя.',
   type: ApplicationCommandType.ChatInput,
