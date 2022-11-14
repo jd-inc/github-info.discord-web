@@ -21,8 +21,7 @@ export default new SlashCommand({
     }
 
     const voiceChannel = interaction.member.voice.channel;
-    const ownedChannel = client. voiceGenerator.get(interaction.member.id)
-    const guildId = interaction.guildId
+    const guildId = interaction.guildId;
     
     if(!voiceChannel) {
       interaction.reply({

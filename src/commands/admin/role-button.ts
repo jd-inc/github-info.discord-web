@@ -42,7 +42,7 @@ export default new SlashCommand({
     const button_style = interaction.options.getString('style');
 
     const customId = `role_btn_${role.name}`;
-    // const button_id_mongo = await RoleButtonId.findOne({ custom_id: customId});
+    const button_id_mongo = await RoleButtonId.findOne({ custom_id: customId});
     
     const ButtonStyles: ButtonStyle[] = [ButtonStyle.Success, ButtonStyle.Secondary, ButtonStyle.Primary, ButtonStyle.Danger];
     const AlternativeStyles: string[] = ['SUCCESS', 'SECONDARY', 'PRIMARY', 'DANGER'];
@@ -62,15 +62,14 @@ export default new SlashCommand({
       ]
     });
 
-    // if(button_id_mongo.button_id) {
-    //   console.log('aaaaa');
-    // } else {
-      // const newId = await RoleButtonId.create({
-      //   button_id: customId
-      // });
-  
-      // const savedId = await newId.save();
-    // }
-    return;
+    if(button_id_mongo.button_id) return
+    else {
+      const newId = await RoleButtonId.create({
+        button_id: customId
+      });
+
+      const savedId = await newId.save();
+      return;
+    }
   }
 })

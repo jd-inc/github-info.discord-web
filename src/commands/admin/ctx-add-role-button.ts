@@ -60,8 +60,15 @@ export default new ContextCommand({
           label: `${title}`,
           style: final_style,
         }), ...components_array.components);
+        
+        if(button_id_mongo.button_id) console.log('a');
+        else {
+          const newId = await RoleButtonId.create({
+            button_id: customId
+          });
 
-        // if()
+          const savedId = await newId.save();
+        }
 
         message.edit({ components: [ result ] });
         
