@@ -1,5 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import RoleButtonId from "../../schemas/RoleButtonId";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
@@ -39,17 +40,20 @@ export default new SlashCommand({
     const role = interaction.options.getRole('role');
     const button_title = interaction.options.getString('title');
     const button_style = interaction.options.getString('style');
+
+    const customId = `role_btn_${role.name}`;
+    // const button_id_mongo = await RoleButtonId.findOne({ custom_id: customId});
     
     const ButtonStyles: ButtonStyle[] = [ButtonStyle.Success, ButtonStyle.Secondary, ButtonStyle.Primary, ButtonStyle.Danger];
     const AlternativeStyles: string[] = ['SUCCESS', 'SECONDARY', 'PRIMARY', 'DANGER'];
     const final_style: any = ButtonStyles[AlternativeStyles.indexOf(button_style.toUpperCase())]
     
-    await  interaction.reply({ 
+    await interaction.reply({ 
       components: [
         new ActionRowBuilder({
           components: [
             new ButtonBuilder({
-              customId: `role_btn_${role.name}`,
+              customId: customId,
               label: `${button_title}`,
               style: final_style,
             })
@@ -57,5 +61,16 @@ export default new SlashCommand({
         })
       ]
     });
+
+    // if(button_id_mongo.button_id) {
+    //   console.log('aaaaa');
+    // } else {
+      // const newId = await RoleButtonId.create({
+      //   button_id: customId
+      // });
+  
+      // const savedId = await newId.save();
+    // }
+    return;
   }
 })

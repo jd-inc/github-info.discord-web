@@ -1,6 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder } from "discord.js";
 import { ApplicationCommandType, ButtonStyle, TextInputStyle } from "discord.js";
 import isArrayElement from "../../lib/isArrayElement";
+import RoleButtonId from "../../schemas/RoleButtonId";
 import { ContextCommand } from "../../structures/Command";
 
 export default new ContextCommand({
@@ -49,21 +50,25 @@ export default new ContextCommand({
 
       if(isArrayElement(AlternativeStyles, style.toUpperCase())) {
         const final_style: ButtonStyle = ButtonStyles[AlternativeStyles.indexOf(style.toUpperCase())];
+        const customId = `role_btn_${name}`;
+        const button_id_mongo = await RoleButtonId.findOne({ customId });
      
         const components_array: any = message.components[0]
 
-      const result: any = new ActionRowBuilder().addComponents(new ButtonBuilder({
-        customId: `role_btn_${name}`,
-        label: `${title}`,
-        style: final_style,
-      }), ...components_array.components)
+        const result: any = new ActionRowBuilder().addComponents(new ButtonBuilder({
+          customId: customId,
+          label: `${title}`,
+          style: final_style,
+        }), ...components_array.components);
 
-      message.edit({ components: [ result ] });
-      
-      await submitted.reply({
-        content: 'Кнопка добавлена.',
-        ephemeral: true
-      })
+        // if()
+
+        message.edit({ components: [ result ] });
+        
+        await submitted.reply({
+          content: 'Кнопка добавлена.',
+          ephemeral: true
+        })
       } else {
         await submitted.reply({
           content: `Стиля ${style.toUpperCase()} для кнопок нет.`,
