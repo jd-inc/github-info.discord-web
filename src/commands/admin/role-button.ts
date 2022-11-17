@@ -1,5 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import isArrayElement from "../../lib/isArrayElement";
 import RoleButtonId from "../../schemas/RoleButtonId";
 import { SlashCommand } from "../../structures/Command";
 
@@ -41,8 +42,11 @@ export default new SlashCommand({
     const button_title = interaction.options.getString('title');
     const button_style = interaction.options.getString('style');
 
-    const customId = `role_btn_${role.name}`;
-    const button_id_mongo = await RoleButtonId.findOne({ custom_id: customId});
+    const customId = `role_btn_${role.id}`;
+    let db_id_array = [];
+    const db_data = await (await RoleButtonId.find()).map(e => {
+      db_id_array.push(e.button_id)
+    });
     
     const ButtonStyles: ButtonStyle[] = [ButtonStyle.Success, ButtonStyle.Secondary, ButtonStyle.Primary, ButtonStyle.Danger];
     const AlternativeStyles: string[] = ['SUCCESS', 'SECONDARY', 'PRIMARY', 'DANGER'];
@@ -54,7 +58,7 @@ export default new SlashCommand({
           components: [
             new ButtonBuilder({
               customId: customId,
-              label: `${button_title}`,
+              label: button_title,
               style: final_style,
             })
           ]
@@ -62,7 +66,8 @@ export default new SlashCommand({
       ]
     });
 
-    if(button_id_mongo.button_id) return
+    
+    if(isArrayElement(db_id_array, customId)) console.log('Эта роль уже в бд.')    
     else {
       const newId = await RoleButtonId.create({
         button_id: customId
@@ -70,6 +75,6 @@ export default new SlashCommand({
 
       const savedId = await newId.save();
       return;
-    }
+    }    
   }
 })

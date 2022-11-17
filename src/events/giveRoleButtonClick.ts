@@ -15,10 +15,10 @@ export default new Event('interactionCreate', async (interaction: any) => {
 
   if (a[a.indexOf(customId)] === customId) {
     const click_user = interaction.guild.members.cache.get(interaction.member.user.id);
-    const role_name = interaction.customId.split('role_btn_')[1];
-    const role = interaction.guild.roles.cache.find(role => role.name === `${role_name}`);  
+    const role_id = interaction.customId.split('role_btn_')[1];
+    const role = interaction.guild.roles.cache.get(role_id);  
 
-    if (click_user.roles.cache.find(role => role.name === `${role_name}`)){
+    if (click_user.roles.cache.get(role => role.name === `${role_id}`)){
       click_user.roles.remove(role);
       interaction.reply({ 
         content: `Роль ${role} убрана.`,
