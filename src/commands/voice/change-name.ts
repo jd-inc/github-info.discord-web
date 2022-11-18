@@ -22,7 +22,7 @@ export default new SlashCommand({
   run: async ({ interaction }) => {
     const newName = interaction.options.get("text").value;
     
-    let db_voiceId_array = [];;
+    let db_voiceId_array = [];
 
     const db_voices = await  AutoVoices.find()
       db_voices.map(e => {
@@ -30,7 +30,7 @@ export default new SlashCommand({
       });
 
     const currentChannel = interaction.member.voice.channel;   
-    const cummandUsed = interaction.member 
+    const cummandUsed = interaction.member;
     
     if (isArrayElement(db_voiceId_array, currentChannel.id)) {
       if (cummandUsed.permissions.has("ManageChannels")) {
