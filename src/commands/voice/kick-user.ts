@@ -1,4 +1,6 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, GuildMember, VoiceChannel } from "discord.js";
+import isArrayElement from "../../lib/isArrayElement";
+import AutoVoices from "../../schemas/AutoVoices";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
@@ -17,49 +19,42 @@ export default new SlashCommand({
   ],
   
   run: async ({ interaction, client }) => {
-    const workingChannel = interaction.guild.channels.cache.find(channel => channel.name === `voice-control`);
-    const currentChannel = interaction.channel
-
-    if(currentChannel !== workingChannel) {
-      interaction.reply({
-        content: `Вводить эту команду можно только в канале ${workingChannel}`,
-        ephemeral: true
-      })
-
-      return;
-    }
-
-    const voiceChannel = interaction.member.voice.channel;
-    const ownedChannel = client. voiceGenerator.get(interaction.member.id)
-    const targetMember: any = interaction.options.getMember("member");
+    const targetMember = interaction.options.getUser("member");
+    const { guild } = interaction;
     
-    if(!voiceChannel) {
-      interaction.reply({
-        content: `Вы не находитесь в голосовм канале!`,
-        ephemeral: true
-      })
+    let db_voiceId_array = [];
 
-      return;
-    }
+    const db_voices = await  AutoVoices.find()
+      db_voices.map(e => {
+        db_voiceId_array.push(e.channel_id);
+      });
 
-    if(!ownedChannel || voiceChannel.id !== ownedChannel){
-      interaction.reply({
-        content: `Вы не являетесь создателем этого канала!`,
-        ephemeral: true
-      })
-
-      return;
-    }
+    const currentChannel = interaction.member.voice.channel;   
+    const cummandUsed = interaction.member;
     
-    voiceChannel.permissionOverwrites.edit(targetMember, {Connect: false});
+    if (isArrayElement(db_voiceId_array, currentChannel.id)) {
+      if (cummandUsed.permissions.has("ManageChannels")) {
+        currentChannel.permissionOverwrites.delete(targetMember);
+        guild.members.cache.get(targetMember.id).voice.disconnect();
+        targetMember.send(`${cummandUsed} изгнал вас из ${currentChannel}`);  
+    
+        await interaction.reply({
+          content: `${targetMember} изгнан из ${currentChannel}`,
+          ephemeral: true
+        })
+      } else {
+        await interaction.reply({
+          content: `Только создатель канала может изгонять участников.`,
+          ephemeral: true
+        })
+      }
+    } else {
+      currentChannel.delete().catch(() => {});
 
-    targetMember.send({
-      content: `Пользователь ${interaction.member} выгнал вас из закрытого канала: ${voiceChannel}.`
-    })
-
-    interaction.reply({
-      content: `Пользователь ${targetMember} был выгнан из закрытого канала ${voiceChannel}.`,
-      ephemeral: true
-    })
+      await interaction.reply({
+        content: `Такого канале не существует :(`,
+        ephemeral: true
+      })
+    }
   }
 })
