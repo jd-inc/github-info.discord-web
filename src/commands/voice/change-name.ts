@@ -1,4 +1,6 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, VoiceChannel } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import isArrayElement from "../../lib/isArrayElement";
+import AutoVoices from "../../schemas/AutoVoices";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
@@ -17,48 +19,42 @@ export default new SlashCommand({
     }
   ],
   
-  run: async ({ interaction, client }) => {
-    const workingChannel = interaction.guild.channels.cache.find(channel => channel.name === `voice-control`);
-    const currentChannel = interaction.channel
+  run: async ({ interaction }) => {
+    const newName = interaction.options.get("text").value;
     
-    if(currentChannel !== workingChannel) {
-      interaction.reply({
-        content: `Вводить эту команду можно только в канале ${workingChannel}`,
-        ephemeral: true
-      })
-      
-      return;
-    }
-    
-    const voiceChannel = interaction.member.voice.channel;
-    const ownedChannel = client. voiceGenerator.get(interaction.member.id);
-    
-    if(!voiceChannel) {
-      interaction.reply({
-        content: `Вы не находитесь в голосовм канале!`,
-        ephemeral: true
-      })
-      
-      return;
-    }
-    
-    if(!ownedChannel || voiceChannel.id !== ownedChannel){
-      interaction.reply({
-        content: `Вы не являетесь создателем этого канала!`,
-        ephemeral: true
-      })
-      
-      return;
-    }
-    
-    const newName = interaction.options.get('text').value;
-    voiceChannel.edit({name: `${newName}`});
+    let db_voiceId_array = [];;
 
-    interaction.reply({
-      content: `Имя канала изменено на: ${newName}.`,
-      ephemeral: true
-    })
+    const db_voices = await  AutoVoices.find()
+      db_voices.map(e => {
+        db_voiceId_array.push(e.channel_id);
+      });
 
-    return
+    const currentChannel = interaction.member.voice.channel;   
+    const cummandUsed = interaction.member 
+    
+    if (isArrayElement(db_voiceId_array, currentChannel.id)) {
+      if (cummandUsed.permissions.has("ManageChannels")) {
+        currentChannel.edit({
+          name: `${newName}`
+        })
+    
+        await interaction.reply({
+          content: `Имя кана изменено на ${newName}`,
+          ephemeral: true
+        })
+      } else {
+        await interaction.reply({
+          content: `Только создатель канала может менять его название.`,
+          ephemeral: true
+        })
+      }
+    } else {
+      currentChannel.delete().catch(() => {});
+
+      await interaction.reply({
+        content: `Такого канале не существует :(`,
+        ephemeral: true
+      })
+    }
   }
 })

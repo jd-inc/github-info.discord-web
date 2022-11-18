@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const AutoVoices = new Schema({
-  guild_id: String,
+  user_id: String,
   channel_id: String
 });
 

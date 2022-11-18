@@ -1,15 +1,15 @@
 import { ChannelType } from "discord.js";
 import { client } from "../bot";
 import AutoVoices from "../schemas/AutoVoices";
+import ParentVoices from "../schemas/ParentVoices";
 import { Event } from "../structures/Event";
 
 export default new Event("voiceStateUpdate", async (oldState, newState) => {
-  const data = await AutoVoices.find();
+  const data = await ParentVoices.find();
   if (!data) return;
-  // console.log(data[0].channel_id);
   
 
-  if (newState.channel.id == data[0].channel_id) {
+  if (newState.channelId == data[0].channel_id) {
     const { guild, user, voice, id } = newState.member;
 
     const parent = newState.channel.parentId;
@@ -18,13 +18,13 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
       : { };
 
     const voiceChannel = await guild.channels.create({
-      name: 'a',
+      name: `${user.username}'s channel`,
       type: ChannelType.GuildVoice,
       ...parentID,
       permissionOverwrites: [
         {
           id: id,
-          allow: [ "Speak", "Stream" ]
+          allow: [ "Speak", "Stream", "Connect", "ManageChannels" ]
         },
         {
           id: guild.id,
@@ -35,6 +35,13 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
 
     client.voiceGenerator.set(voiceChannel.id, newState.member.id);
     voice.setChannel(voiceChannel.id);
+
+    const newOwner = await AutoVoices.create({
+      user_id: id,
+      channel_id: voiceChannel.id
+    })
+
+    const savedOwner = await newOwner.save();
   }
 
   if ( client.voiceGenerator.get(oldState.channelId) && oldState.channel.members.size === 0 ) {

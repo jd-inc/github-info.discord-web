@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, VoiceChannel } from "discord.js";
-import AutoVoices from "../../schemas/AutoVoices";
+import ParentVoices from "../../schemas/ParentVoices";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
@@ -21,7 +21,7 @@ export default new SlashCommand({
   run: async ({ interaction, client }) => {
     const channel = interaction.options.get("channel").channel;
 
-    const newId = await AutoVoices.create({
+    const newId = await ParentVoices.create({
       guild_id: interaction.guild.id,
       channel_id: channel.id
     });
