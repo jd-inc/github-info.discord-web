@@ -24,7 +24,7 @@ export default new SlashCommand({
     
     let db_voiceId_array = [];
 
-    const db_voices = await  AutoVoices.find()
+    const db_voices = await AutoVoices.find()
       db_voices.map(e => {
         db_voiceId_array.push(e.channel_id);
       });

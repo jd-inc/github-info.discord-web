@@ -1,4 +1,6 @@
 import { ApplicationCommandType } from "discord.js";
+import isArrayElement from "../../lib/isArrayElement";
+import AutoVoices from "../../schemas/AutoVoices";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
@@ -7,35 +9,32 @@ export default new SlashCommand({
   description: 'Открыть ваш голосовой канал для всех и каждого!',
   type: ApplicationCommandType.ChatInput,
   
-  run: async ({ interaction, client }) => {
-    const workingChannel = interaction.guild.channels.cache.find(channel => channel.name === `voice-control`);
-    const currentChannel = interaction.channel
-
-    if(currentChannel !== workingChannel) {
-      interaction.reply({
-        content: `Вводить эту команду можно только в канале ${workingChannel}`,
-        ephemeral: true
-      })
-
-      return;
-    }
-
-    const voiceChannel = interaction.member.voice.channel;
-    const guildId = interaction.guildId;
+  run: async ({ interaction }) => {    
+    const { guild } = interaction;
+    let db_voiceId_array = [];
     
-    if(!voiceChannel) {
-      interaction.reply({
-        content: `Вы не находитесь в голосовм канале!`,
-        ephemeral: true
-      })
+    const db_voices = await AutoVoices.find()
+      db_voices.map(e => {
+        db_voiceId_array.push(e.channel_id);
+      });
 
-      return;
-    }
+    const currentChannel = interaction.member.voice.channel;   
+    const cummandUsed = interaction.member;
     
-    voiceChannel.permissionOverwrites.edit(guildId, {Connect: true});
-
-    interaction.reply({
-      content: `Теперь все могут зайти в канал ${voiceChannel}!`
-    })
+    if (isArrayElement(db_voiceId_array, currentChannel.id)) {
+      if (cummandUsed.permissions.has("ManageChannels")) {
+        const everyone = guild.roles.everyone;
+        currentChannel.permissionOverwrites.edit(everyone, { Connect: true })
+    
+        await interaction.reply({
+          content: `Теперь ${currentChannel} открыт для всех и каждого!`
+        })
+      } else {
+        await interaction.reply({
+          content: `Только создатель канала может изгонять участников.`,
+          ephemeral: true
+        })
+      }
+    } else return;
   }
 })
