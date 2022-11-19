@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, GuildMember, VoiceChannel } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
 import isArrayElement from "../../lib/isArrayElement";
 import AutoVoices from "../../schemas/AutoVoices";
 import { SlashCommand } from "../../structures/Command";

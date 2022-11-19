@@ -37,7 +37,6 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
     voice.setChannel(voiceChannel.id);
 
     const newOwner = await AutoVoices.create({
-      user_id: id,
       channel_id: voiceChannel.id
     })
 
@@ -45,7 +44,10 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
   }
 
   if ( client.voiceGenerator.get(oldState.channelId) && oldState.channel.members.size === 0 ) {
+    await AutoVoices.deleteOne({ channel_id: oldState.channelId })
+    
     oldState.channel.delete().catch(() => {})
+    
     return;
   }   
 })
