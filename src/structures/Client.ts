@@ -38,6 +38,7 @@ export class ExtendedClient extends Client {
     this.connectionToMOngoose();
 
     this.login(process.env.BOT_TOKEN);
+    process.setMaxListeners(0);
   }
   async importFile(filePath: string) {
     return (await import(filePath))?.default;

@@ -17,12 +17,13 @@ export default new SlashCommand({
       db_voices.map(e => {
         db_voiceId_array.push(e.channel_id);
       });
+    const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
 
     const currentChannel = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
     
     if (isArrayElement(db_voiceId_array, currentChannel.id)) {
-      if (cummandUsed.permissions.has("ManageChannels")) {
+      if (channel_owner.owner_id === cummandUsed.id) {
         const everyone = guild.roles.everyone;
         currentChannel.permissionOverwrites.edit(everyone, { Connect: true })
     

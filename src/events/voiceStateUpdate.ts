@@ -24,7 +24,7 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
       permissionOverwrites: [
         {
           id: id,
-          allow: [ "Speak", "Stream", "Connect", "ManageChannels" ]
+          allow: [ "Speak", "Stream", "Connect" ]
         },
         {
           id: guild.id,
@@ -37,7 +37,8 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
     voice.setChannel(voiceChannel.id);
 
     const newOwner = await AutoVoices.create({
-      channel_id: voiceChannel.id
+      channel_id: voiceChannel.id,
+      owner_id: id
     })
 
     const savedOwner = await newOwner.save();

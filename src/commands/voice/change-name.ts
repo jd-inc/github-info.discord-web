@@ -24,16 +24,17 @@ export default new SlashCommand({
     
     let db_voiceId_array = [];
 
-    const db_voices = await  AutoVoices.find()
+    const db_voices = await AutoVoices.find();
       db_voices.map(e => {
         db_voiceId_array.push(e.channel_id);
       });
-
+    const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
+    
     const currentChannel = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
     
     if (isArrayElement(db_voiceId_array, currentChannel.id)) {
-      if (cummandUsed.permissions.has("ManageChannels")) {
+      if (channel_owner.owner_id === cummandUsed.id) {
         currentChannel.edit({
           name: `${newName}`
         })
@@ -41,8 +42,9 @@ export default new SlashCommand({
         await interaction.reply({
           content: `Имя кана изменено на ${newName}`,
           ephemeral: true
-        })
-      } else {
+        })        
+      } 
+      else {
         await interaction.reply({
           content: `Только создатель канала может менять его название.`,
           ephemeral: true
