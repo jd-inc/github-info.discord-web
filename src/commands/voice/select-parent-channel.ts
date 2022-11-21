@@ -29,7 +29,7 @@ export default new SlashCommand({
     const savedId = await newId.save();
     
     await interaction.reply({
-      content: 'готово крч',
+      content: 'Канал выбран.',
       ephemeral: true
     })
   }

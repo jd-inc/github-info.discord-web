@@ -29,7 +29,8 @@ export default new SlashCommand({
 
         if (!channel_info.is_open) {
           await interaction.reply({
-            content: `Канал уже является закрытым.`
+            content: `Канал уже является закрытым.`,
+            ephemeral: true
           })
 
           return;
@@ -39,7 +40,8 @@ export default new SlashCommand({
         currentChannel.permissionOverwrites.edit(everyone, { Connect: false })
         
         await interaction.reply({
-          content: `Теперь в ${currentChannel} можно попасть только по приглашению!`
+          content: `Теперь в ${currentChannel} можно попасть только по приглашению!`,
+          ephemeral: true
         })
       } else {
         await interaction.reply({
@@ -47,6 +49,13 @@ export default new SlashCommand({
           ephemeral: true
         })
       }
-    } else return;
+    } else {
+      currentChannel.delete().catch(() => {});
+
+      await interaction.reply({
+        content: `Такого канале не существует :(`,
+        ephemeral: true
+      })
+    }
   }
 })

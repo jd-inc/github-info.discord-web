@@ -29,7 +29,8 @@ export default new SlashCommand({
           
         if (channel_info.is_open) {
           await interaction.reply({
-            content: `Канал уже является открытым.`
+            content: `Канал уже является открытым.`,
+            ephemeral: true
           })
 
           return;
@@ -47,6 +48,13 @@ export default new SlashCommand({
           ephemeral: true
         })
       }
-    } else return;
+    } else {
+      currentChannel.delete().catch(() => {});
+
+      await interaction.reply({
+        content: `Такого канале не существует :(`,
+        ephemeral: true
+      })
+    }
   }
 })
