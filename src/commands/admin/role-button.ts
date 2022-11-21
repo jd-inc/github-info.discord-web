@@ -50,7 +50,7 @@ export default new SlashCommand({
     
     const ButtonStyles: ButtonStyle[] = [ButtonStyle.Success, ButtonStyle.Secondary, ButtonStyle.Primary, ButtonStyle.Danger];
     const AlternativeStyles: string[] = ['SUCCESS', 'SECONDARY', 'PRIMARY', 'DANGER'];
-    const final_style: any = ButtonStyles[AlternativeStyles.indexOf(button_style.toUpperCase())]
+    const final_style: ButtonStyle = ButtonStyles[AlternativeStyles.indexOf(button_style.toUpperCase())]
     
     await interaction.reply({ 
       components: [
@@ -65,7 +65,6 @@ export default new SlashCommand({
         })
       ]
     });
-
     
     if(isArrayElement(db_id_array, customId)) console.log('Эта роль уже в бд.')    
     else {

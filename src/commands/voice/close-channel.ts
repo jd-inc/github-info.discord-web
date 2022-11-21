@@ -4,9 +4,9 @@ import AutoVoices from "../../schemas/AutoVoices";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
-  name: 'voice-open',
+  name: 'voice-close',
   defaultMemberPermissions: 'Connect',
-  description: 'Открыть ваш голосовой канал для всех и каждого!',
+  description: 'Сделать ваш канал доступным только по приглашениям.',
   type: ApplicationCommandType.ChatInput,
   
   run: async ({ interaction }) => {    
@@ -26,24 +26,24 @@ export default new SlashCommand({
       if (channel_owner.owner_id === cummandUsed.id) {
         const everyone = guild.roles.everyone;
         const channel_info: any = await AutoVoices.findOne({channel_id: currentChannel.id});
-          
-        if (channel_info.is_open) {
+
+        if (!channel_info.is_open) {
           await interaction.reply({
-            content: `Канал уже является открытым.`
+            content: `Канал уже является закрытым.`
           })
 
           return;
         }
+
+        await AutoVoices.updateOne({channel_id: currentChannel.id}, {is_open: false})
+        currentChannel.permissionOverwrites.edit(everyone, { Connect: false })
         
-        await AutoVoices.updateOne({channel_id: currentChannel.id}, {is_open: true})
-        currentChannel.permissionOverwrites.edit(everyone, { Connect: true })
-    
         await interaction.reply({
-          content: `Теперь ${currentChannel} открыт для всех и каждого!`
+          content: `Теперь в ${currentChannel} можно попасть только по приглашению!`
         })
       } else {
         await interaction.reply({
-          content: `Только создатель канала может изгонять участников.`,
+          content: `Только создатель канала может его закрывать.`,
           ephemeral: true
         })
       }

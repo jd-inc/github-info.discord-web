@@ -57,8 +57,7 @@ export default new ContextCommand({
             db_id_array.push(e.button_id)
           });
 
-        
-        const components_array: any = message.components[0]
+        const components_array = message.components[0];
         
         const result: any = new ActionRowBuilder().addComponents(new ButtonBuilder({
           customId: customId,
