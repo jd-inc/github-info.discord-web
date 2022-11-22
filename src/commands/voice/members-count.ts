@@ -3,23 +3,22 @@ import AutoVoices from "../../schemas/AutoVoices";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
-  name: 'voice-name',
+  name: 'voice-limit',
   defaultMemberPermissions: 'Connect',
   description: 'Изменить имя вашего канала.',
   type: ApplicationCommandType.ChatInput,
 
   options: [
     {
-      name: "text",
-      description: 'Введите новое название для вашего канала.',
+      name: "count",
+      description: 'Введите лимит людей которыйе смогут присоедениться к вам.',
       required: true,
-      type: ApplicationCommandOptionType.String,
-      maxLength: 22
+      type: ApplicationCommandOptionType.Number
     }
   ],
   
   run: async ({ interaction }) => {
-    const newName = interaction.options.get("text").value;
+    const membersLimit = interaction.options.get("count").value;
     const currentChannel = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
 
@@ -30,17 +29,17 @@ export default new SlashCommand({
     if (channel_id) {
       if (channel_owner.owner_id === cummandUsed.id) {
         currentChannel.edit({
-          name: `${newName}`
+          userLimit: Number(membersLimit)
         })
     
         await interaction.reply({
-          content: `Имя кана изменено на ${newName}`,
+          content: `Лимит человек в канале тепрь ${membersLimit}`,
           ephemeral: true
         })        
       } 
       else {
         await interaction.reply({
-          content: `Только создатель канала может менять его название.`,
+          content: `Только создатель канала может менять лимит участников.`,
           ephemeral: true
         })
       }

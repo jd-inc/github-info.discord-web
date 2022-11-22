@@ -1,5 +1,4 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
-import isArrayElement from "../../lib/isArrayElement";
 import AutoVoices from "../../schemas/AutoVoices";
 import { SlashCommand } from "../../structures/Command";
 
@@ -18,7 +17,7 @@ export default new SlashCommand({
     }
   ],
   
-  run: async ({ interaction, client }) => {
+  run: async ({ interaction }) => {
     const targetMember = interaction.options.getUser("member");
     const { guild } = interaction;
     const currentChannel = interaction.member.voice.channel;   

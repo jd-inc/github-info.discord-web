@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, VoiceChannel } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType } from "discord.js";
 import ParentVoices from "../../schemas/ParentVoices";
 import { SlashCommand } from "../../structures/Command";
 
@@ -18,7 +18,7 @@ export default new SlashCommand({
     }
   ],
   
-  run: async ({ interaction, client }) => {
+  run: async ({ interaction }) => {
     const channel = interaction.options.get("channel").channel;
 
     const newId = await ParentVoices.create({
