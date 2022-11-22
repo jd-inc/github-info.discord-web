@@ -20,19 +20,13 @@ export default new SlashCommand({
   
   run: async ({ interaction }) => {
     const targetUser = interaction.options.getUser("user");
-    
-    let db_voiceId_array = [];
-
-    const db_voices = await  AutoVoices.find()
-      db_voices.map(e => {
-        db_voiceId_array.push(e.channel_id);
-      });
-    const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
-
     const currentChannel = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
+
+    const channel_id = await AutoVoices.findOne({channel_id: currentChannel.id});    
+    const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
     
-    if (isArrayElement(db_voiceId_array, currentChannel.id)) {
+    if (channel_id) {
       if (channel_owner.owner_id === cummandUsed.id) {
         currentChannel.permissionOverwrites.edit(targetUser, { "Speak": true, "Stream": true, "Connect": true })
         targetUser.send(`${cummandUsed} приглашает вас в ${currentChannel}`);  
