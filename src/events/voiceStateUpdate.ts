@@ -39,7 +39,8 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
     const newOwner = await AutoVoices.create({
       channel_id: voiceChannel.id,
       owner_id: id,
-      is_open: false
+      is_open: false,
+      users_limit: null
     })
 
     const savedOwner = await newOwner.save();

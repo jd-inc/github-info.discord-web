@@ -5,20 +5,20 @@ import { SlashCommand } from "../../structures/Command";
 export default new SlashCommand({
   name: 'voice-limit',
   defaultMemberPermissions: 'Connect',
-  description: 'Изменить имя вашего канала.',
+  description: 'Изменить количество человек в этом канале.',
   type: ApplicationCommandType.ChatInput,
 
   options: [
     {
       name: "count",
-      description: 'Введите лимит людей которыйе смогут присоедениться к вам.',
+      description: 'Введите лимит человек которыйе смогут присоедениться к вам.',
       required: true,
       type: ApplicationCommandOptionType.Number
     }
   ],
   
   run: async ({ interaction }) => {
-    const membersLimit = interaction.options.get("count").value;
+    const usersLimit = interaction.options.get("count").value;
     const currentChannel = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
 
@@ -29,11 +29,12 @@ export default new SlashCommand({
     if (channel_id) {
       if (channel_owner.owner_id === cummandUsed.id) {
         currentChannel.edit({
-          userLimit: Number(membersLimit)
+          userLimit: Number(usersLimit)
         })
     
+        await AutoVoices.updateOne({channel_id: currentChannel.id}, {users_limit: usersLimit});
         await interaction.reply({
-          content: `Лимит человек в канале тепрь ${membersLimit}`,
+          content: `Лимит человек в канале тепрь ${usersLimit}`,
           ephemeral: true
         })        
       } 
