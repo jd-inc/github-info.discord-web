@@ -4,7 +4,8 @@ const AutoVoices = new Schema({
   channel_id: String,
   owner_id: String,
   is_open: Boolean,
-  users_limit: Number
+  users_limit: Number,
+  successors: [String]
 });
 
 export default model<any>("Auto-Voices", AutoVoices);

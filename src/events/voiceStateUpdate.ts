@@ -40,7 +40,8 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
       channel_id: voiceChannel.id,
       owner_id: id,
       is_open: false,
-      users_limit: null
+      users_limit: null,
+      successors: []
     })
 
     const savedOwner = await newOwner.save();

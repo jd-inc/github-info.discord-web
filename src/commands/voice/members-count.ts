@@ -1,4 +1,5 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import isArrayElement from "../../lib/isArrayElement";
 import AutoVoices from "../../schemas/AutoVoices";
 import { SlashCommand } from "../../structures/Command";
 
@@ -13,7 +14,8 @@ export default new SlashCommand({
       name: "count",
       description: 'Введите лимит человек которыйе смогут присоедениться к вам.',
       required: true,
-      type: ApplicationCommandOptionType.Number
+      type: ApplicationCommandOptionType.Number,
+      maxValue: 99
     }
   ],
   
@@ -22,12 +24,13 @@ export default new SlashCommand({
     const currentChannel = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
 
-    const channel_id = await AutoVoices.findOne({channel_id: currentChannel.id});
+    const channel = await AutoVoices.findOne({channel_id: currentChannel.id});
     const channel_owner = await AutoVoices.findOne({channel_id: interaction.member.voice.channel.id});
     
     
-    if (channel_id) {
-      if (channel_owner.owner_id === cummandUsed.id) {
+    if (channel) {
+      const successorsArray = channel.successors; 
+      if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
         currentChannel.edit({
           userLimit: Number(usersLimit)
         })
@@ -40,7 +43,7 @@ export default new SlashCommand({
       } 
       else {
         await interaction.reply({
-          content: `Только создатель канала может менять лимит участников.`,
+          content: `Только создатель канала и его приемники могут менять лимит участников.`,
           ephemeral: true
         })
       }

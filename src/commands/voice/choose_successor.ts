@@ -4,43 +4,42 @@ import AutoVoices from "../../schemas/AutoVoices";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
-  name: 'voice-kick',
+  name: 'voice-successor',
   defaultMemberPermissions: 'Connect',
-  description: 'Выгнать пользователя из вашего канала.',
+  description: 'Выдать права создателя канала.',
   type: ApplicationCommandType.ChatInput,
 
   options: [
     {
-      name: "member",
-      description: 'Выберите пользователя.',
+      name: "user",
+      description: 'Выберите приемника.',
       required: true,
       type: ApplicationCommandOptionType.User
     }
   ],
   
   run: async ({ interaction }) => {
-    const targetMember = interaction.options.getUser("member");
-    const { guild } = interaction;
+    const targetUser = interaction.options.getUser("user");
     const currentChannel = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
 
-    const channel = await AutoVoices.findOne({channel_id: currentChannel.id});
+    const channel = await AutoVoices.findOne({channel_id: currentChannel.id});    
     const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
-
-    if (channel) {
-      const successorsArray = channel.successors; 
-      if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
-        currentChannel.permissionOverwrites.delete(targetMember);
-        guild.members.cache.get(targetMember.id).voice.disconnect();
-        targetMember.send(`${cummandUsed} изгнал вас из ${currentChannel}`);  
     
+    if (channel) {
+      const successorsArray = channel.successors;
+      if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id )) {
+        targetUser.send(`${cummandUsed} назначет вас приемником в ${currentChannel}`);  
+        const updatedSuccessorsArray = new Set([...successorsArray, targetUser.id]);
+
+        await AutoVoices.updateOne({channel_id: currentChannel.id}, {successors: Array.from(updatedSuccessorsArray)})
         await interaction.reply({
-          content: `${targetMember} изгнан из ${currentChannel}`,
+          content: `Приемник выбран.`,
           ephemeral: true
         })
       } else {
         await interaction.reply({
-          content: `Только создатель канала и его приемники могут изгонять участников.`,
+          content: `Только создатель канала и его приемники могут добавлять новых приемников.`,
           ephemeral: true
         })
       }
