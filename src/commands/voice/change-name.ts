@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import { SlashCommand } from "../../structures/Command";
 import isArrayElement from "../../lib/isArrayElement";
 import AutoVoices from "../../schemas/AutoVoices";
-import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
   name: 'voice-name',
@@ -26,33 +26,32 @@ export default new SlashCommand({
 
     const channel = await AutoVoices.findOne({channel_id: currentChannel.id});
     const channel_owner = await AutoVoices.findOne({channel_id: interaction.member.voice.channel.id});
+    const successorsArray = channel.successors; 
     
-    
-    if (channel) {
-      const successorsArray = channel.successors; 
-      if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
-        currentChannel.edit({
-          name: `${newName}`
-        })
-    
-        await interaction.reply({
-          content: `Имя кана изменено на ${newName}`,
-          ephemeral: true
-        })        
-      } 
-      else {
-        await interaction.reply({
-          content: `Только создатель канала и его приемники могут менять его название.`,
-          ephemeral: true
-        })
-      }
-    } else {
+    if (!channel) {
       currentChannel.delete().catch(() => {});
 
       await interaction.reply({
         content: `Такого канале не существует :(`,
         ephemeral: true
-      })
+      });
     }
+    
+    if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
+      currentChannel.edit({
+        name: `${newName}`
+      })
+  
+      await interaction.reply({
+        content: `Имя кана изменено на ${newName}`,
+        ephemeral: true
+      });        
+    } else {
+      await interaction.reply({
+        content: `Только создатель канала и его приемники могут менять его название.`,
+        ephemeral: true
+      });
+    }
+
   }
 })

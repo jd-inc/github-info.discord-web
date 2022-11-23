@@ -21,16 +21,16 @@ export default new SlashCommand({
   run: async ({ interaction }) => {
     const channel = interaction.options.get("channel").channel;
 
-    const newId = await ParentVoices.create({
+    const newChannel = await ParentVoices.create({
       guild_id: interaction.guild.id,
       channel_id: channel.id
     });
 
-    const savedId = await newId.save();
+    const savedChannel = await newChannel.save();
     
     await interaction.reply({
       content: 'Канал выбран.',
       ephemeral: true
-    })
+    });
   }
 })

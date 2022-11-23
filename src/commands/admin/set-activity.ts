@@ -29,7 +29,7 @@ export default new SlashCommand({
 
     await interaction.reply({
       content: `Aктивность бота изменена на: ${activity_name}.`, 
-      ephemeral: true}
-    )
+      ephemeral: true
+    });
   }
 })

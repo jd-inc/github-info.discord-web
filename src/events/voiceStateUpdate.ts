@@ -28,7 +28,7 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
         },
         {
           id: guild.id,
-          deny: [ "Connect" ]
+          allow: [ "Connect" ]
         }
       ]
     })
@@ -36,15 +36,15 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
     client.voiceGenerator.set(voiceChannel.id, newState.member.id);
     voice.setChannel(voiceChannel.id);
 
-    const newOwner = await AutoVoices.create({
+    const newChannel = await AutoVoices.create({
       channel_id: voiceChannel.id,
       owner_id: id,
-      is_open: false,
+      is_open: true,
       users_limit: null,
       successors: []
     })
 
-    const savedOwner = await newOwner.save();
+    const savedChannel = await newChannel.save();
   }
 
   if ( client.voiceGenerator.get(oldState.channelId) && oldState.channel.members.size === 0 ) {

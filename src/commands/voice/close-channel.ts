@@ -16,42 +16,42 @@ export default new SlashCommand({
 
     const channel = await AutoVoices.findOne({channel_id: currentChannel.id});
     const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
+    const successorsArray = channel.successors; 
     
-    if (channel) {
-      const successorsArray = channel.successors; 
-      if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
-        const everyone = guild.roles.everyone;
-        const channel_info: any = await AutoVoices.findOne({channel_id: currentChannel.id});
-
-        if (!channel_info.is_open) {
-          await interaction.reply({
-            content: `Канал уже является закрытым.`,
-            ephemeral: true
-          })
-
-          return;
-        }
-
-        await AutoVoices.updateOne({channel_id: currentChannel.id}, {is_open: false})
-        currentChannel.permissionOverwrites.edit(everyone, { Connect: false })
-        
-        await interaction.reply({
-          content: `Теперь в ${currentChannel} можно попасть только по приглашению!`,
-          ephemeral: true
-        })
-      } else {
-        await interaction.reply({
-          content: `Только создатель канала и его приемники могут его закрывать.`,
-          ephemeral: true
-        })
-      }
-    } else {
+    if (!channel) {
       currentChannel.delete().catch(() => {});
 
       await interaction.reply({
         content: `Такого канале не существует :(`,
         ephemeral: true
-      })
+      });
+    }
+
+    if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
+      const everyone = guild.roles.everyone;
+      const channel_info: any = await AutoVoices.findOne({channel_id: currentChannel.id});
+      
+      if (!channel_info.is_open) {
+        await interaction.reply({
+          content: `Канал уже является закрытым.`,
+          ephemeral: true
+        })
+
+        return;
+      }
+
+      await AutoVoices.updateOne({channel_id: currentChannel.id}, {is_open: false});
+      currentChannel.permissionOverwrites.edit(everyone, { Connect: false });
+      
+      await interaction.reply({
+        content: `Теперь в ${currentChannel} можно попасть только по приглашению!`,
+        ephemeral: true
+      });
+    } else {
+      await interaction.reply({
+        content: `Только создатель канала и его приемники могут его закрывать.`,
+        ephemeral: true
+      });
     }
   }
 })

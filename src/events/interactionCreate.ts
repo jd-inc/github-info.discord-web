@@ -43,9 +43,4 @@ export default new Event("interactionCreate", async (interaction) => {
   process.on("uncaughtExceptionMonitor", async (err) => {
     console.error("Uncaught Promise Exception (Monitor):\n", err);
   });
-
-  // process.on("multipleResolves", async (type, promise, reason) => {
-  //   console.error("Multiple Resolves:\n", type, promise, reason);
-  // });
-  
 });

@@ -26,31 +26,31 @@ export default new SlashCommand({
 
     const channel = await AutoVoices.findOne({channel_id: currentChannel.id});
     const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
+    const successorsArray = channel.successors; 
 
-    if (channel) {
-      const successorsArray = channel.successors; 
-      if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
-        currentChannel.permissionOverwrites.delete(targetMember);
-        guild.members.cache.get(targetMember.id).voice.disconnect();
-        targetMember.send(`${cummandUsed} изгнал вас из ${currentChannel}`);  
-    
-        await interaction.reply({
-          content: `${targetMember} изгнан из ${currentChannel}`,
-          ephemeral: true
-        })
-      } else {
-        await interaction.reply({
-          content: `Только создатель канала и его приемники могут изгонять участников.`,
-          ephemeral: true
-        })
-      }
-    } else {
+    if (!channel) {
       currentChannel.delete().catch(() => {});
 
       await interaction.reply({
         content: `Такого канале не существует :(`,
         ephemeral: true
-      })
+      });
+    }
+
+    if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
+      currentChannel.permissionOverwrites.delete(targetMember);
+      guild.members.cache.get(targetMember.id).voice.disconnect();
+      targetMember.send(`${cummandUsed} изгнал вас из ${currentChannel}`);  
+  
+      await interaction.reply({
+        content: `${targetMember} изгнан из ${currentChannel}`,
+        ephemeral: true
+      });
+    } else {
+      await interaction.reply({
+        content: `Только создатель канала и его приемники могут изгонять участников.`,
+        ephemeral: true
+      });
     }
   }
 })

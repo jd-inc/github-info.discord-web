@@ -43,10 +43,7 @@ export default new SlashCommand({
     const button_style = interaction.options.getString('style');
 
     const customId = `role_btn_${role.id}`;
-    let db_id_array = [];
-    const db_data = await (await RoleButtonId.find()).map(e => {
-      db_id_array.push(e.button_id)
-    });
+    const button_id_mongo = await RoleButtonId.findOne({button_id: customId});
     
     const ButtonStyles: ButtonStyle[] = [ButtonStyle.Success, ButtonStyle.Secondary, ButtonStyle.Primary, ButtonStyle.Danger];
     const AlternativeStyles: string[] = ['SUCCESS', 'SECONDARY', 'PRIMARY', 'DANGER'];
@@ -66,8 +63,7 @@ export default new SlashCommand({
       ]
     });
     
-    if(isArrayElement(db_id_array, customId)) console.log('Эта роль уже в бд.')    
-    else {
+    if(!button_id_mongo) {
       const newId = await RoleButtonId.create({
         button_id: customId
       });

@@ -5,20 +5,14 @@ export default new Event('interactionCreate', async (interaction: any) => {
   if (!interaction.isButton()) return;
 
   const customId = interaction.customId
-  const button_id_mongo = await RoleButtonId.find();
+  const button_id_mongo = await RoleButtonId.findOne({button_id: customId});
 
-  let a = []
-  button_id_mongo.map((e, i) => {
-    a.push(e.button_id)
-    return a
-  })
-
-  if (a[a.indexOf(customId)] === customId) {
+  if (button_id_mongo) {
     const click_user = interaction.guild.members.cache.get(interaction.member.user.id);
     const role_id = interaction.customId.split('role_btn_')[1];
     const role = interaction.guild.roles.cache.get(role_id);  
 
-    if (click_user.roles.cache.get(role => role.name === `${role_id}`)){
+    if (click_user.roles.cache.get(role_id)){
       click_user.roles.remove(role);
       interaction.reply({ 
         content: `Роль ${role} убрана.`,
@@ -32,7 +26,7 @@ export default new Event('interactionCreate', async (interaction: any) => {
     interaction.reply({ 
       content: `Теперь у вас есть ${role} роль.`,
       ephemeral: true
-    })
+    });
   }
 
   if(interaction.customId === "verify_button") {
