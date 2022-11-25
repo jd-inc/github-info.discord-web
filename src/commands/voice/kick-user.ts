@@ -21,15 +21,15 @@ export default new SlashCommand({
   run: async ({ interaction }) => {
     const targetMember = interaction.options.getUser("member");
     const { guild } = interaction;
-    const currentChannel = interaction.member.voice.channel;   
+    const currentVoice = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
 
-    const channel = await AutoVoices.findOne({channel_id: currentChannel.id});
+    const channel = await AutoVoices.findOne({channel_id: currentVoice.id});
     const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
     const successorsArray = channel.successors; 
 
     if (!channel) {
-      currentChannel.delete().catch(() => {});
+      currentVoice.delete().catch(() => {});
 
       await interaction.reply({
         content: `Такого канале не существует :(`,
@@ -38,12 +38,12 @@ export default new SlashCommand({
     }
 
     if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
-      currentChannel.permissionOverwrites.delete(targetMember);
+      currentVoice.permissionOverwrites.delete(targetMember);
       guild.members.cache.get(targetMember.id).voice.disconnect();
-      targetMember.send(`${cummandUsed} изгнал вас из ${currentChannel}`);  
+      targetMember.send(`${cummandUsed} изгнал вас из ${currentVoice}`);  
   
       await interaction.reply({
-        content: `${targetMember} изгнан из ${currentChannel}`,
+        content: `${targetMember} изгнан из ${currentVoice}`,
         ephemeral: true
       });
     } else {

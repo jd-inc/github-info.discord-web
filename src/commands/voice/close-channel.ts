@@ -11,15 +11,15 @@ export default new SlashCommand({
   
   run: async ({ interaction }) => {    
     const { guild } = interaction;
-    const currentChannel = interaction.member.voice.channel;   
+    const currentVoice = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
 
-    const channel = await AutoVoices.findOne({channel_id: currentChannel.id});
+    const channel = await AutoVoices.findOne({channel_id: currentVoice.id});
     const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
     const successorsArray = channel.successors; 
     
     if (!channel) {
-      currentChannel.delete().catch(() => {});
+      currentVoice.delete().catch(() => {});
 
       await interaction.reply({
         content: `Такого канале не существует :(`,
@@ -29,7 +29,7 @@ export default new SlashCommand({
 
     if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
       const everyone = guild.roles.everyone;
-      const channel_info: any = await AutoVoices.findOne({channel_id: currentChannel.id});
+      const channel_info: any = await AutoVoices.findOne({channel_id: currentVoice.id});
       
       if (!channel_info.is_open) {
         await interaction.reply({
@@ -40,11 +40,11 @@ export default new SlashCommand({
         return;
       }
 
-      await AutoVoices.updateOne({channel_id: currentChannel.id}, {is_open: false});
-      currentChannel.permissionOverwrites.edit(everyone, { Connect: false });
+      await AutoVoices.updateOne({channel_id: currentVoice.id}, {is_open: false});
+      currentVoice.permissionOverwrites.edit(everyone, { Connect: false });
       
       await interaction.reply({
-        content: `Теперь в ${currentChannel} можно попасть только по приглашению!`,
+        content: `Теперь в ${currentVoice} можно попасть только по приглашению!`,
         ephemeral: true
       });
     } else {

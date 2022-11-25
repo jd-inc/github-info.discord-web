@@ -4,7 +4,6 @@ import { Event } from "../structures/Event";
 import { ExtendedInteraction } from "../typings/SlashCommand";
 
 export default new Event("interactionCreate", async (interaction) => {
-  // Input Commands
   if (interaction.isChatInputCommand()) {
     const command = client.commands.get(interaction.commandName);
     if (!command) {
@@ -17,7 +16,7 @@ export default new Event("interactionCreate", async (interaction) => {
       interaction: interaction as ExtendedInteraction,
     });
   }
-  // Context Menu 
+
   if (interaction.isContextMenuCommand()) {
     const command = client.commands.get(interaction.commandName);
     if (!command) {
@@ -31,7 +30,6 @@ export default new Event("interactionCreate", async (interaction) => {
     });
   }
 
-  // Errors handling
   process.on("unhandledRejection", async (err) => {
     console.error("Unhandled Promise Rejection:\n", err);
   });

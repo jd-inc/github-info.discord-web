@@ -20,15 +20,15 @@ export default new SlashCommand({
   
   run: async ({ interaction }) => {
     const targetUser = interaction.options.getUser("user");
-    const currentChannel = interaction.member.voice.channel;   
+    const currentVoice = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
 
-    const channel = await AutoVoices.findOne({channel_id: currentChannel.id});    
+    const channel = await AutoVoices.findOne({channel_id: currentVoice.id});    
     const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
     const successorsArray = channel.successors; 
     
     if (!channel) {
-      currentChannel.delete().catch(() => {});
+      currentVoice.delete().catch(() => {});
 
       await interaction.reply({
         content: `Такого канале не существует :(`,
@@ -37,11 +37,11 @@ export default new SlashCommand({
     }
 
     if (channel_owner.owner_id === cummandUsed.id  || isArrayElement(successorsArray, cummandUsed.id)) {
-      currentChannel.permissionOverwrites.edit(targetUser, { "Speak": true, "Stream": true, "Connect": true })
-      targetUser.send(`${cummandUsed} приглашает вас в ${currentChannel}`);  
+      currentVoice.permissionOverwrites.edit(targetUser, { "Speak": true, "Stream": true, "Connect": true })
+      targetUser.send(`${cummandUsed} приглашает вас в ${currentVoice}`);  
   
       await interaction.reply({
-        content: `${targetUser} приглашен в ${currentChannel}`,
+        content: `${targetUser} приглашен в ${currentVoice}`,
         ephemeral: true
       });
     } else {

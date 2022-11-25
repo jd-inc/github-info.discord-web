@@ -20,15 +20,15 @@ export default new SlashCommand({
   
   run: async ({ interaction }) => {
     const targetUser = interaction.options.getUser("user");
-    const currentChannel = interaction.member.voice.channel;   
+    const currentVoice = interaction.member.voice.channel;   
     const cummandUsed = interaction.member;
 
-    const channel = await AutoVoices.findOne({channel_id: currentChannel.id});    
+    const channel = await AutoVoices.findOne({channel_id: currentVoice.id});    
     const channel_owner = await AutoVoices.findOne({ channel_id: interaction.member.voice.channel.id });
     const successorsArray = channel.successors;
     
     if (!channel) {
-      currentChannel.delete().catch(() => {});
+      currentVoice.delete().catch(() => {});
 
       await interaction.reply({
         content: `Такого канале не существует :(`,
@@ -37,10 +37,10 @@ export default new SlashCommand({
     }
 
     if (channel_owner.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id )) {
-      targetUser.send(`${cummandUsed} назначет вас приемником в ${currentChannel}`);  
+      targetUser.send(`${cummandUsed} назначет вас приемником в ${currentVoice}`);  
       const updatedSuccessorsArray = new Set([...successorsArray, targetUser.id]);
 
-      await AutoVoices.updateOne({channel_id: currentChannel.id}, {successors: Array.from(updatedSuccessorsArray)});
+      await AutoVoices.updateOne({channel_id: currentVoice.id}, {successors: Array.from(updatedSuccessorsArray)});
       await interaction.reply({
         content: `Приемник выбран.`,
         ephemeral: true
