@@ -1,4 +1,5 @@
 import RoleButtonId from "../schemas/RoleButtonId";
+import VerifyButton from "../schemas/VerifyButton";
 import { Event } from "../structures/Event";
 
 export default new Event('interactionCreate', async (interaction: any) => {
@@ -31,10 +32,11 @@ export default new Event('interactionCreate', async (interaction: any) => {
 
   if(interaction.customId === "verify_button") {
     const click_user = interaction.guild.members.cache.get(interaction.member.user.id);
-    const member_role = interaction.guild.roles.cache.find(role => role.name === `Member`);  
-    const base_role = interaction.guild.roles.cache.find(role => role.name === `Ознакомлен с правилами`); 
+    const config = await VerifyButton.find();
+    const default_role = interaction.guild.roles.cache.get(config[0].default_role_id); 
+    const member_role = interaction.guild.roles.cache.get(config[0].member_role_id);    
 
-    if (click_user.roles.cache.find(role => role.name === `Member`)){
+    if (click_user.roles.cache.get(config[0].member_role_id)) {
       click_user.roles.remove(member_role);
       await interaction.reply({ 
         content: `Роль ${member_role} убрана.`,
@@ -44,7 +46,7 @@ export default new Event('interactionCreate', async (interaction: any) => {
     }
     
     click_user.roles.add(member_role);
-    click_user.roles.add(base_role);
+    click_user.roles.add(default_role);
   
     await interaction.reply({ 
       content: `Теперь у вас есть ${member_role} роль`,

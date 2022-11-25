@@ -1,5 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import VerifyButton from "../../schemas/VerifyButton";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
@@ -30,6 +31,16 @@ export default new SlashCommand({
   ],
   
   run: async ({ interaction }: any) => {
+    const config = await VerifyButton.find();
+    if (!config[0]) {
+      interaction.reply({
+        content: `Нет готовой конфигурации для этой кнопки, используйте команду /configurate-verify-button перед созданием кнопки!`,
+        ephemeral: true
+      })
+
+      return;
+    }
+    
     const title = interaction.options.getString('title');
     const style = interaction.options.getString('style');
     
