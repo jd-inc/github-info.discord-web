@@ -55,6 +55,14 @@ export default new SlashCommand({
       || isArrayElement(channel_from_db.admins, cummandUsed.id);
     
     if (canUseCommand) {
+      if (isArrayElement(successorsArray, targetUser.id) ) {
+        interaction.reply({
+          content: `Этот человек уже входит в число приемников в этом канале.`,
+          ephemeral: true
+        })
+
+        return;
+      }
       const updatedSuccessorsArray = new Set([...successorsArray, targetUser.id]);
 
       await AutoVoices.updateOne({channel_id: currentVoice.id}, {successors: Array.from(updatedSuccessorsArray)});
