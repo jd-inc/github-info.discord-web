@@ -17,7 +17,8 @@ export default new SlashCommand({
       description: 'Введите лимит человек которыйе смогут присоедениться к вам.',
       required: true,
       type: ApplicationCommandOptionType.Number,
-      maxValue: 99
+      maxValue: 99,
+      minValue: 1
     }
   ],
   
