@@ -22,6 +22,7 @@ export default new SlashCommand({
   run: async ({ interaction }) => {
     const newName = interaction.options.get("text").value;
     const currentVoice = interaction.member.voice.channel;   
+    const currentChannel = interaction.channel
     const cummandUsed = interaction.member;
 
     const channel_from_db = await AutoVoices.findOne({channel_id: currentVoice.id});

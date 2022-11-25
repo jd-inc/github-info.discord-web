@@ -1,35 +1,35 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType } from "discord.js";
-import ParentVoices from "../../schemas/ParentVoices";
+import CommandChannels from "../../schemas/CommandChannels";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
-  name: 'select-channel',
+  name: 'add-voice-command-channel',
   defaultMemberPermissions: 'Administrator',
-  description: 'Пригласить в ваш канал другого пользователя.',
+  description: 'Выбрать канал для работы войс комманд.',
   type: ApplicationCommandType.ChatInput,
 
   options: [
     {
       name: "channel",
-      description: 'Выберите канал для работы.',
+      description: 'Выберите канал.',
       required: true,
       type: ApplicationCommandOptionType.Channel,
-      channelTypes: [ ChannelType.GuildVoice ]
+      channelTypes: [ ChannelType.GuildText ]
     }
   ],
   
   run: async ({ interaction }) => {
     const channel = interaction.options.get("channel").channel;
 
-    const newChannel = await ParentVoices.create({
+    const newChannel = await CommandChannels.create({
       guild_id: interaction.guild.id,
       channel_id: channel.id
     });
-
+    
     const savedChannel = await newChannel.save();
     
     await interaction.reply({
-      content: 'Канал выбран.',
+      content: 'Канал добавлен.',
       ephemeral: true
     });
   }
