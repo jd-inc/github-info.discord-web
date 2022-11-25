@@ -29,7 +29,6 @@ export default new SlashCommand({
 
     const channel_from_db = await AutoVoices.findOne({channel_id: currentVoice.id});
     const successorsArray = channel_from_db.successors; 
-    
     const specialChannelsArray: string[] = await (await CommandChannels.find())
       .map((e) => {
         return e.channel_id
