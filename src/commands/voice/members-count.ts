@@ -1,6 +1,8 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
 import isArrayElement from "../../lib/isArrayElement";
+import isVoiceCommandChannel from "../../lib/isVoiceCommandChannel";
 import AutoVoices from "../../schemas/AutoVoices";
+import CommandChannels from "../../schemas/CommandChannels";
 import { SlashCommand } from "../../structures/Command";
 
 export default new SlashCommand({
@@ -22,11 +24,25 @@ export default new SlashCommand({
   run: async ({ interaction }) => {
     const usersLimit = interaction.options.get("count").value;
     const currentVoice = interaction.member.voice.channel;   
+    const currentChannel = interaction.channel;
     const cummandUsed = interaction.member;
 
     const channel_from_db = await AutoVoices.findOne({channel_id: currentVoice.id});
     const successorsArray = channel_from_db.successors; 
     
+    const specialChannelsArray: string[] = await (await CommandChannels.find())
+      .map((e) => {
+        return e.channel_id
+      })
+    
+    if (!isVoiceCommandChannel(currentChannel.id, specialChannelsArray)) {
+      interaction.reply({
+        content: `Используйте специальный канал для войс комманд.`,
+        ephemeral: true
+      })
+
+      return;
+    }
     
     if (!channel_from_db) {
       currentVoice.delete().catch(() => {});
