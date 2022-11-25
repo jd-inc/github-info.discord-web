@@ -36,11 +36,17 @@ export default new Event("voiceStateUpdate", async (oldState, newState) => {
     client.voiceGenerator.set(voiceChannel.id, newState.member.id);
     voice.setChannel(voiceChannel.id);
 
+    const guildAdminsArray: string[] = [];
+    guild.members.cache.map((user) => {
+      if (user.permissions.has("Administrator")) return guildAdminsArray.push(user.id);
+    });    
+
     const newChannel = await AutoVoices.create({
       channel_id: voiceChannel.id,
       owner_id: id,
       is_open: true,
       users_limit: null,
+      admins: guildAdminsArray,
       successors: []
     })
 

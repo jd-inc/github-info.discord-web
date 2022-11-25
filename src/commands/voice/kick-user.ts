@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
 import isArrayElement from "../../lib/isArrayElement";
-import isVoiceCommandChannel from "../../lib/isVoiceCommandChannel";
 import AutoVoices from "../../schemas/AutoVoices";
 import CommandChannels from "../../schemas/CommandChannels";
 import { SlashCommand } from "../../structures/Command";
@@ -35,7 +34,7 @@ export default new SlashCommand({
         return e.channel_id
       })
     
-    if (!isVoiceCommandChannel(currentChannel.id, specialChannelsArray)) {
+    if (!isArrayElement(specialChannelsArray, currentChannel.id)) {
       interaction.reply({
         content: `Используйте специальный канал для войс комманд.`,
         ephemeral: true
@@ -53,7 +52,11 @@ export default new SlashCommand({
       });
     }
 
-    if (channel_from_db.owner_id === cummandUsed.id || isArrayElement(successorsArray, cummandUsed.id)) {
+    const canUseCommand: boolean = channel_from_db.owner_id === cummandUsed.id 
+    || isArrayElement(successorsArray, cummandUsed.id) 
+    || isArrayElement(channel_from_db.admins, cummandUsed.id);
+  
+    if (canUseCommand) {      
       currentVoice.permissionOverwrites.delete(targetMember);
       guild.members.cache.get(targetMember.id).voice.disconnect();
       targetMember.send(`${cummandUsed} изгнал вас из ${currentVoice}`);  

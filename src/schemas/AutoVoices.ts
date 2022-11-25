@@ -5,6 +5,7 @@ const AutoVoices = new Schema({
   owner_id: String,
   is_open: Boolean,
   users_limit: Number,
+  admins: [String],
   successors: [String]
 });
 
