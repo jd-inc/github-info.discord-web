@@ -7,7 +7,7 @@ import {
 import glob from "glob";
 import mongoose from "mongoose";
 import { promisify } from "util";
-import { CommandType } from "../typings/Command";
+import { CommandType } from "../typings/SlashCommand";
 import { RegisterCommandsOptions } from "../typings/client";
 import { Event } from "./Event";
 
@@ -71,7 +71,6 @@ export class ExtendedClient extends Client {
   }
 
   async registerModules() {
-    // Commands
     const slashCommands: ApplicationCommandDataResolvable[] = [];
     const commandFiles = await globPromise(
       `${__dirname}/../commands/*/*{.ts,.js}`
@@ -79,7 +78,6 @@ export class ExtendedClient extends Client {
     commandFiles.forEach(async (filePath) => {
       const command: CommandType = await this.importFile(filePath);
       if (!command.name) return;
-      console.log(command);
 
       this.commands.set(command.name, command);
       slashCommands.push(command);
@@ -91,8 +89,7 @@ export class ExtendedClient extends Client {
         guildId: process.env.GUILD_ID,
       });
     });
-
-    // Event
+    
     const eventFiles = await globPromise(`${__dirname}/../events/*{.ts,.js}`);
     eventFiles.forEach(async (filePath) => {
       const event: Event<keyof ClientEvents> = await this.importFile(filePath);

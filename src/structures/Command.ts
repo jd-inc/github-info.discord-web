@@ -1,4 +1,5 @@
-import { CommandType, ContextType } from "../typings/Command";
+import { ContextType } from "../typings/ContextCommand";
+import { CommandType } from "../typings/SlashCommand";
 
 export class SlashCommand {
   constructor(commandOptions: CommandType) {

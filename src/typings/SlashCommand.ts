@@ -2,9 +2,7 @@ import {
   ChatInputApplicationCommandData,
   CommandInteraction,
   CommandInteractionOptionResolver,
-  ContextMenuCommandInteraction,
   GuildMember,
-  MessageApplicationCommandData,
   PermissionResolvable,
 } from "discord.js";
 import { ExtendedClient } from "../structures/Client";
@@ -19,21 +17,9 @@ interface RunOptions {
   args: CommandInteractionOptionResolver;
 }
 
-interface RunOptions2 {
-  client: ExtendedClient;
-  interaction: ContextMenuCommandInteraction;
-  args: CommandInteractionOptionResolver;
-}
-
 type RunFunction = (options: RunOptions) => any;
-type RunFunction2 = (options: RunOptions2) => any;
 
 export type CommandType = {
   userPermissions?: PermissionResolvable[];
   run: RunFunction;
 } & ChatInputApplicationCommandData;
-
-export type ContextType = {
-  userPermissions?: PermissionResolvable[];
-  run: RunFunction2;
-} & MessageApplicationCommandData;
